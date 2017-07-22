@@ -37,6 +37,37 @@ def test_replace_at():
     assert replace_at('----', 3, 'xx') == '---xx'
     assert replace_at('----', 3, 'xx\n') == '---xx\n'
 
+def test_replace_block():
+    lines = [
+        'foo',
+        'bar',
+        'b',
+    ]
+    block = [
+        '1234',
+        '5678',
+    ]
+    assert list(replace_block(lines, 1, 2, block)) == [
+        'foo',
+        'ba1234',
+        'b 5678',
+    ]
+
+def test_line():
+    assert line('<->', 0) == ''
+    assert line('<->', 1) == '<'
+    assert line('<->', 2) == '<-'
+    assert line('<->', 3) == '<->'
+    assert line('<->', 4) == '<-->'
+    assert line('<->', 5) == '<--->'
+
+    assert line([['+---+'], ['|   |'], ['+---+']], 4) == [
+        '+---+',
+        '|   |',
+        '|   |',
+        '+---+',
+    ]
+
 # -------- Box drawing --------
 
 def test_basic_box_drawing():
