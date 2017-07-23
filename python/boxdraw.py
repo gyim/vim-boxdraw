@@ -27,17 +27,40 @@ def replace_at(line, pos, s):
     line = expand_line(line, pos + len(s))
     return line[:pos] + s + line[pos+len(s):]
 
-def replace_block(lines, y, x, block):
-    "Replaces a rectangular block inside the given lines."
+def overwrite_at(line, pos, s):
+    "Write `s` into line at given `pos`, except whitespaces."
+    s = s.rstrip()
+    line = expand_line(line, pos + len(s))
+    line, nl = split_nl(line)
+
+    result = ''
+    for i, c in enumerate(line):
+        if pos <= i < pos+len(s) and s[i-pos] != ' ':
+            result += s[i-pos]
+        else:
+            result += c
+        i += 1
+    return result + nl
+
+def merge_block(lines, y, x, block, merge_fn):
+    "Merges a rectangular block on the given lines using a merge function."
     h = len(block)
     w = max(len(line) for line in block) if h>0 else 0
 
     for l, line in enumerate(lines):
         line, nl = split_nl(line)
         if h > 0 and w > 0 and y <= l < y+h:
-            yield replace_at(line, x, block[l-y]) + nl
+            yield merge_fn(line, x, block[l-y]) + nl
         else:
-            yield line
+            yield line + nl
+
+def replace_block(lines, y, x, block):
+    "Replaces a rectangular block inside the given lines."
+    return merge_block(lines, y, x, block, replace_at)
+
+def overwrite_block(lines, y, x, block):
+    "Writes a rectangular block into the given lines, except whitespaces."
+    return merge_block(lines, y, x, block, overwrite_at)
 
 def line(pattern, w):
     "Returns pattern enlarged to fit width `w`"
@@ -68,6 +91,16 @@ def align_v(lines, height, where, empty):
 
     return lines
 
+def char_at(lines, y, x, default=' '):
+    "Returns the character at the given position, or default if it is out of bounds."
+    lines = list(lines)
+    if not 0 <= y < len(lines):
+        return default
+    line = lines[y]
+    if not 0 <= x < len(line):
+        return default
+    return line[x]
+
 # -------- Box drawing --------
 
 def draw_box(lines, y1, x1, y2, x2):
@@ -97,6 +130,62 @@ def draw_box_with_label(lines, y1, x1, y2, x2, yalign, xalign, text):
         lines = fill_box(lines, y1+1, x1+2, y2-1, x2-2, yalign, xalign, text)
     return lines
 
+# -------- Line drawing --------
+
+def arrow_reverse(arrow):
+    "Returns the reverse of an arrow: +-> becomes <-+"
+    return arrow[2].replace('>','<').replace('^','v') + arrow[1] + arrow[0].replace('<','>').replace('v','^')
+
+def arrow_h2v(arrow):
+    "Converts an arrow to vertical. Returns a block that can be merged into lines."
+    arrow = arrow.replace('-', '|').replace('<','^').replace('>','v')
+    return [[a] for a in arrow]
+
+def arrow_start(lines, y1, x1, arrow):
+    "Replaces the beginning of an arrow with '+' if necessary."
+    c = char_at(lines, y1, x1)
+    if c in '+|-':
+        return '+' + arrow[1:]
+    else:
+        return arrow
+
+def draw_line_hv(lines, y1, x1, y2, x2, arrow):
+    "Draws an arrow between two points, always starting with the horizontal line."
+    y, x, h, w = block_pos(y1, x1, y2, x2)
+    arrow = arrow_start(lines, y1, x1, arrow)
+    if w > 1:
+        a = arrow if x2 > x1 else arrow_reverse(arrow)
+        lines = overwrite_block(lines, y1, x, [line(a, w)])
+    if h > 1:
+        if w > 1: 
+            arrow = '+' + arrow[1:]
+        a = arrow_h2v(arrow if y2 > y1 else arrow_reverse(arrow))
+        lines = overwrite_block(lines, y, x2, line(a, h))
+    return lines
+
+def draw_line_vh(lines, y1, x1, y2, x2, arrow):
+    "Draws an arrow between two points, always starting with the vertical line."
+    y, x, h, w = block_pos(y1, x1, y2, x2)
+    arrow = arrow_start(lines, y1, x1, arrow)
+    if h > 1:
+        a = arrow_h2v(arrow if y2 > y1 else arrow_reverse(arrow))
+        lines = overwrite_block(lines, y, x1, line(a, h))
+    if w > 1:
+        if h > 1:
+            arrow = '+' + arrow[1:]
+        a = arrow if x2 > x1 else arrow_reverse(arrow)
+        lines = overwrite_block(lines, y2, x, [line(a, w)])
+    return lines
+
+def draw_line_auto(lines, y1, x1, y2, x2, arrow):
+    "Draws a line between two points, determining the proper direction (hv or vh)."
+    y, x, h, w = block_pos(y1, x1, y2, x2)
+    lines = list(lines)
+    if char_at(lines, y2, x2 + cmp(x2,x1)) == '|':
+        return draw_line_vh(lines, y1, x1, y2, x2, arrow)
+    else:
+        return draw_line_hv(lines, y1, x1, y2, x2, arrow)
+
 # -------- Main --------
 
 CMDS = {
@@ -116,6 +205,11 @@ CMDS = {
     '+{]c': [fill_box, 'top', 'right'],
     '+}[c': [fill_box, 'bottom', 'left'],
     '+}]c': [fill_box, 'bottom', 'right'],
+
+    '+>': [draw_line_auto, '-->'],
+    '+<': [draw_line_auto, '<->'],
+    '+:': [draw_line_auto, '---'],
+    '++': [draw_line_auto, '--+'],
 }
 
 if __name__ == '__main__':

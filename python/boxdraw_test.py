@@ -35,7 +35,15 @@ def test_replace_at():
     assert replace_at('----', 0, 'xx') == 'xx--'
     assert replace_at('----', 1, 'xx') == '-xx-'
     assert replace_at('----', 3, 'xx') == '---xx'
+    assert replace_at('----', 3, 'xxx') == '---xxx'
     assert replace_at('----', 3, 'xx\n') == '---xx\n'
+
+def test_overwrite_at():
+    assert overwrite_at('----', 0, 'x x ') == 'x-x-'
+    assert overwrite_at('----', 1, 'x x ') == '-x-x'
+    assert overwrite_at('----', 2, 'x x ') == '--x-x'
+    assert overwrite_at('----', 3, 'x x ') == '---x x'
+    assert overwrite_at('----\n', 3, 'x x ') == '---x x\n'
 
 def test_replace_block():
     lines = [
@@ -158,4 +166,168 @@ def test_draw_box_with_label():
         '.......2.', '.+-----+.',
         '.........', '.........',
     ], 'top', 'left', 'foo bar')
+
+# -------- Line drawing --------
+
+def test_arrow_reverse():
+    assert arrow_reverse('---') == '---'
+    assert arrow_reverse('<->') == '<->'
+    assert arrow_reverse('-->') == '<--'
+    assert arrow_reverse('<--') == '-->'
+
+def test_draw_ling_hv():
+    assert_cmd(draw_line_hv, ' ', ' ', [
+        ' 1    2 ', ' o----> ',
+    ], 'o->')
+
+    assert_cmd(draw_line_hv, ' ', ' ', [
+        ' 2    1 ', ' <----o ',
+    ], 'o->')
+
+    assert_cmd(draw_line_hv, ' ', ' ', [
+        ' ', ' ',
+        '1', 'o',
+        ' ', '|',
+        ' ', '|',
+        '2', 'v',
+    ], 'o->')
+
+    assert_cmd(draw_line_hv, ' ', ' ', [
+        ' ', ' ',
+        '2', '^',
+        ' ', '|',
+        ' ', '|',
+        '1', 'o',
+    ], 'o->')
+
+    assert_cmd(draw_line_hv, ' ', ' ', [
+        '        ', '        ',
+        ' 1      ', ' o----+ ',
+        '        ', '      | ',
+        '      2 ', '      v ',
+        '        ', '        ',
+    ], 'o->')
+
+    assert_cmd(draw_line_hv, ' ', ' ', [
+        '        ', '        ',
+        ' 2      ', ' ^      ',
+        '        ', ' |      ',
+        '      1 ', ' +----o ',
+        '        ', '        ',
+    ], 'o->')
+
+    assert_cmd(draw_line_hv, ' ', ' ', [
+        '        ', '        ',
+        '      1 ', ' +----o ',
+        '        ', ' |      ',
+        ' 2      ', ' v      ',
+        '        ', '        ',
+    ], 'o->')
+
+    assert_cmd(draw_line_hv, ' ', ' ', [
+        '        ', '        ',
+        '      2 ', '      ^ ',
+        '        ', '      | ',
+        ' 1      ', ' o----+ ',
+        '        ', '        ',
+    ], 'o->')
+
+def test_draw_ling_vh():
+    assert_cmd(draw_line_vh, ' ', ' ', [
+        ' 1    2 ', ' o----> ',
+    ], 'o->')
+
+    assert_cmd(draw_line_vh, ' ', ' ', [
+        ' 2    1 ', ' <----o ',
+    ], 'o->')
+
+    assert_cmd(draw_line_vh, ' ', ' ', [
+        ' ', ' ',
+        '1', 'o',
+        ' ', '|',
+        ' ', '|',
+        '2', 'v',
+    ], 'o->')
+
+    assert_cmd(draw_line_vh, ' ', ' ', [
+        ' ', ' ',
+        '2', '^',
+        ' ', '|',
+        ' ', '|',
+        '1', 'o',
+    ], 'o->')
+
+    assert_cmd(draw_line_vh, ' ', ' ', [
+        '        ', '        ',
+        ' 1      ', ' o      ',
+        '        ', ' |      ',
+        '      2 ', ' +----> ',
+        '        ', '        ',
+    ], 'o->')
+
+    assert_cmd(draw_line_vh, ' ', ' ', [
+        '        ', '        ',
+        ' 2      ', ' <----+ ',
+        '        ', '      | ',
+        '      1 ', '      o ',
+        '        ', '        ',
+    ], 'o->')
+
+    assert_cmd(draw_line_vh, ' ', ' ', [
+        '        ', '        ',
+        '      1 ', '      o ',
+        '        ', '      | ',
+        ' 2      ', ' <----+ ',
+        '        ', '        ',
+    ], 'o->')
+
+    assert_cmd(draw_line_vh, ' ', ' ', [
+        '        ', '        ',
+        '      2 ', ' +----> ',
+        '        ', ' |      ',
+        ' 1      ', ' o      ',
+        '        ', '        ',
+    ], 'o->')
+
+def test_draw_line_auto():
+    assert_cmd(draw_line_auto, ' ', ' ', [
+        '       |', '       |',
+        '      2|', ' +---->|',
+        '       |', ' |     |',
+        ' 1      ', ' o      ',
+        '        ', '        ',
+    ], 'o->')
+
+    assert_cmd(draw_line_auto, ' ', ' ', [
+        '     ---', '     ---',
+        '      2 ', '      ^ ',
+        '        ', '      | ',
+        ' 1      ', ' o----+ ',
+        '        ', '        ',
+    ], 'o->')
+
+def test_line_start_plus():
+    assert_cmd(draw_line_auto, '-', ' ', [
+        '       |', '       |',
+        '      2|', ' +---->|',
+        '       |', ' |     |',
+        '-1-     ', '-+-     ',
+        '        ', '        ',
+    ], '-->')
+
+    assert_cmd(draw_line_auto, '+', ' ', [
+        '       |', '       |',
+        '      2|', ' +---->|',
+        '       |', ' |     |',
+        '-1-     ', '-+-     ',
+        ' |      ', ' |      ',
+    ], '-->')
+
+    assert_cmd(draw_line_auto, '|', ' ', [
+        '     ---', '     ---',
+        '      2 ', '      ^ ',
+        ' |      ', ' |    | ',
+        ' 1      ', ' +----+ ',
+        ' |      ', ' |      ',
+    ], '-->')
 
