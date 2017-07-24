@@ -28,15 +28,21 @@ def replace_at(line, pos, s):
     return line[:pos] + s + line[pos+len(s):]
 
 def overwrite_at(line, pos, s):
-    "Write `s` into line at given `pos`, except whitespaces."
+    "Write `s` into line at given `pos`, merging line conjunctions and skipping whitespaces."
     s = s.rstrip()
     line = expand_line(line, pos + len(s))
     line, nl = split_nl(line)
 
     result = ''
     for i, c in enumerate(line):
-        if pos <= i < pos+len(s) and s[i-pos] != ' ':
-            result += s[i-pos]
+        if pos <= i < pos+len(s):
+            C = s[i-pos]
+            if C == ' ':
+                result += c
+            elif (C in '-+' and c in '|+') or (C in '|+' and c in '-+'):
+                result += '+'
+            else:
+                result += C
         else:
             result += c
         i += 1

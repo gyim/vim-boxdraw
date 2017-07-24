@@ -50,6 +50,7 @@ def test_overwrite_at():
     assert overwrite_at('----', 2, 'x x ') == '--x-x'
     assert overwrite_at('----', 3, 'x x ') == '---x x'
     assert overwrite_at('----\n', 3, 'x x ') == '---x x\n'
+    assert overwrite_at('---', 0, ' | ') == '-+-'
 
 def test_replace_block():
     lines = [
@@ -295,7 +296,7 @@ def test_draw_ling_vh():
         '        ', '        ',
     ], 'o->')
 
-def test_line_start_plus():
+def test_line_plus_connections():
     assert_cmd(draw_line_vh, '-', ' ', [
         '       |', '       |',
         '      2|', ' +---->|',
@@ -304,19 +305,19 @@ def test_line_start_plus():
         '        ', '        ',
     ], '-->')
 
-    assert_cmd(draw_line_vh, '+', ' ', [
+    assert_cmd(draw_line_vh, '-', '|', [
         '       |', '       |',
-        '      2|', ' +---->|',
+        '       2', ' +----->',
         '       |', ' |     |',
         '-1-     ', '-+-     ',
-        ' |      ', ' |      ',
+        '        ', '        ',
     ], '-->')
 
-    assert_cmd(draw_line_hv, '|', ' ', [
-        '     ---', '     ---',
-        '      2 ', '      ^ ',
-        ' |      ', ' |    | ',
-        ' 1      ', ' +----+ ',
-        ' |      ', ' |      ',
-    ], '-->')
+    assert_cmd(draw_line_vh, '-', '|', [
+        '       |', '       |',
+        '       2', ' +-----+',
+        '       |', ' |     |',
+        '-1-     ', '-+-     ',
+        '        ', '        ',
+    ], '---')
 
