@@ -21,9 +21,9 @@ def assert_cmd(cmd, cur1, cur2, lines, *args):
         actual = list(run_command(cmd, input_lines, y1, x1, y2, x2, *args))
 
     if expected != actual:
-        print "Expected:"
+        print("Expected:")
         pprint(expected, width=1)
-        print "Actual:"
+        print("Actual:")
         pprint(actual, width=1)
     assert expected == actual
 
