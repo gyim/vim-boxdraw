@@ -6,14 +6,20 @@ from pprint import pprint
 def assert_cmd(cmd, cur1, cur2, lines, *args):
     assert len(lines) % 2 == 0
     input_lines = [lines[i] for i in range(0, len(lines), 2)]
-    output_lines = [lines[i] for i in range(1, len(lines), 2)]
+    expected = [lines[i] for i in range(1, len(lines), 2)]
+
+    # Determine coordinates from '1' / '2' strings
     y1 = [i for i in range(len(input_lines)) if '1' in input_lines[i]][0]
     y2 = [i for i in range(len(input_lines)) if '2' in input_lines[i]][0]
     x1 = [l.index('1') for l in input_lines if '1' in l][0]
     x2 = [l.index('2') for l in input_lines if '2' in l][0]
     input_lines = [l.replace('1',cur1).replace('2',cur2) for l in input_lines]
-    expected = output_lines
-    actual = list(cmd(input_lines, y1, x1, y2, x2, *args))
+
+    if callable(cmd):
+        actual = list(cmd(input_lines, y1, x1, y2, x2, *args))
+    else:
+        actual = list(run_command(cmd, input_lines, y1, x1, y2, x2, *args))
+
     if expected != actual:
         print "Expected:"
         pprint(expected, width=1)
@@ -79,7 +85,7 @@ def test_line():
 # -------- Box drawing --------
 
 def test_basic_box_drawing():
-    assert_cmd(draw_box, '.', '.', [
+    assert_cmd('+o', '.', '.', [
         '........', '........',
         '..1.....', '..+---+.',
         '........', '..|   |.',
@@ -88,7 +94,7 @@ def test_basic_box_drawing():
     ])
 
 def test_box_drawing_after_line_end():
-    assert_cmd(draw_box ,'.', '.', [
+    assert_cmd('+o' ,'.', '.', [
         '........', '........',
         '..1.'    , '..+---+',
         ''        , '  |   |',
@@ -96,76 +102,76 @@ def test_box_drawing_after_line_end():
     ])
 
 def test_fill_box_alignments():
-    assert_cmd(fill_box, ' ', ' ', [
+    assert_cmd('+{[c', ' ', ' ', [
         '+------------+', '+------------+',
         '|1...........|', '|This is a   |',
         '|....FOO.....|', '|test.       |',
         '|............|', '|            |',
         '|...........2|', '|            |',
         '+------------+', '+------------+',
-    ], 'top', 'left', 'This is a test.')
+    ], 'This is a test.')
 
-    assert_cmd(fill_box, ' ', ' ', [
+    assert_cmd('+{c', ' ', ' ', [
         '+------------+', '+------------+',
         '|1...........|', '| This is a  |',
         '|....FOO.....|', '|   test.    |',
         '|............|', '|            |',
         '|...........2|', '|            |',
         '+------------+', '+------------+',
-    ], 'top', 'center', 'This is a test.')
+    ], 'This is a test.')
 
-    assert_cmd(fill_box, ' ', ' ', [
+    assert_cmd('+{]c', ' ', ' ', [
         '+------------+', '+------------+',
         '|1...........|', '|   This is a|',
         '|....FOO.....|', '|       test.|',
         '|............|', '|            |',
         '|...........2|', '|            |',
         '+------------+', '+------------+',
-    ], 'top', 'right', 'This is a test.')
+    ], 'This is a test.')
 
-    assert_cmd(fill_box, ' ', ' ', [
+    assert_cmd('+c', ' ', ' ', [
         '+------------+', '+------------+',
         '|1...........|', '|            |',
         '|....FOO.....|', '| This is a  |',
         '|............|', '|   test.    |',
         '|...........2|', '|            |',
         '+------------+', '+------------+',
-    ], 'middle', 'center', 'This is a test.')
+    ], 'This is a test.')
 
-    assert_cmd(fill_box, ' ', ' ', [
+    assert_cmd('+}]c', ' ', ' ', [
         '+------------+', '+------------+',
         '|1...........|', '|            |',
         '|....FOO.....|', '|            |',
         '|............|', '|   This is a|',
         '|...........2|', '|       test.|',
         '+------------+', '+------------+',
-    ], 'bottom', 'right', 'This is a test.')
+    ], 'This is a test.')
 
 def test_fill_box_too_small():
-    assert_cmd(fill_box, ' ', ' ', [
+    assert_cmd('+{[c', ' ', ' ', [
         '+-----+', '+-----+', 
         '|1    |', '|not  |', 
         '|    2|', '|enoug|',
         '+-----+', '+-----+', 
-    ], 'top', 'left', 'not enough space')
+    ], 'not enough space')
 
-    assert_cmd(fill_box, ' ', ' ', [
+    assert_cmd('+{[c', ' ', ' ', [
         '+-+', '+-+',
         '|1|', '|n|',
         '|.|', '|e|',
         '|2|', '|s|',
         '+-+', '+-+',
-    ], 'top', 'left', 'not enough space')
+    ], 'not enough space')
 
 def test_draw_box_with_label():
-    assert_cmd(draw_box_with_label, '.', '.', [
+    assert_cmd('+O', '.', '.', [
         '.........', '.........',
         '.1.......', '.+-----+.',
         '.........', '.| foo |.',
         '.........', '.| bar |.',
         '.......2.', '.+-----+.',
         '.........', '.........',
-    ], 'top', 'left', 'foo bar')
+    ], 'foo bar')
 
 # -------- Line drawing --------
 

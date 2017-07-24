@@ -186,13 +186,15 @@ def draw_line_auto(lines, y1, x1, y2, x2, arrow):
     else:
         return draw_line_hv(lines, y1, x1, y2, x2, arrow)
 
-# -------- Main --------
+# -------- Vim commands --------
 
 CMDS = {
     '+o': [draw_box],
     '+O': [draw_box_with_label, 'middle', 'center'],
     '+[O': [draw_box_with_label, 'middle', 'left'],
     '+]O': [draw_box_with_label, 'middle', 'right'],
+    '+{O': [draw_box_with_label, 'top', 'middle'],
+    '+}O': [draw_box_with_label, 'bottom', 'middle'],
     '+{[O': [draw_box_with_label, 'top', 'left'],
     '+{]O': [draw_box_with_label, 'top', 'right'],
     '+}[O': [draw_box_with_label, 'bottom', 'left'],
@@ -201,6 +203,8 @@ CMDS = {
     '+c': [fill_box, 'middle', 'center'],
     '+[c': [fill_box, 'middle', 'left'],
     '+]c': [fill_box, 'middle', 'right'],
+    '+{c': [fill_box, 'top', 'center'],
+    '+}c': [fill_box, 'bottom', 'center'],
     '+{[c': [fill_box, 'top', 'left'],
     '+{]c': [fill_box, 'top', 'right'],
     '+}[c': [fill_box, 'bottom', 'left'],
@@ -212,15 +216,20 @@ CMDS = {
     '++': [draw_line_auto, '--+'],
 }
 
+def run_command(cmd, lines, y1, x1, y2, x2, *args):
+    f = CMDS[cmd][0]
+    args = CMDS[cmd][1:] + list(args)
+    return f(lines, y1, x1, y2, x2, *args)
+
+# -------- Main --------
+
 if __name__ == '__main__':
     import sys
+
     cmd, y1, x1, y2, x2 = sys.argv[1:6]
     y1, x1, y2, x2 = int(y1), int(x1), int(y2), int(x2)
 
-    f = CMDS[cmd][0]
-    args = CMDS[cmd][1:] + sys.argv[6:]
-
     lines = sys.stdin.readlines()
-    for line in f(lines, y1, x1, y2, x2, *args):
+    for line in run_command(cmd, lines, y1, x1, y2, x2, *sys.argv[6:]):
         sys.stdout.write(line)
 
