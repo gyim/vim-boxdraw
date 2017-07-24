@@ -177,18 +177,10 @@ def draw_line_vh(lines, y1, x1, y2, x2, arrow):
         lines = overwrite_block(lines, y2, x, [line(a, w)])
     return lines
 
-def draw_line_auto(lines, y1, x1, y2, x2, arrow):
-    "Draws a line between two points, determining the proper direction (hv or vh)."
-    y, x, h, w = block_pos(y1, x1, y2, x2)
-    lines = list(lines)
-    if char_at(lines, y2, x2 + cmp(x2,x1)) == '|':
-        return draw_line_vh(lines, y1, x1, y2, x2, arrow)
-    else:
-        return draw_line_hv(lines, y1, x1, y2, x2, arrow)
-
 # -------- Vim commands --------
 
 CMDS = {
+    # Box drawing
     '+o': [draw_box],
     '+O': [draw_box_with_label, 'middle', 'center'],
     '+[O': [draw_box_with_label, 'middle', 'left'],
@@ -200,6 +192,7 @@ CMDS = {
     '+}[O': [draw_box_with_label, 'bottom', 'left'],
     '+}]O': [draw_box_with_label, 'bottom', 'right'],
 
+    # Label drawing
     '+c': [fill_box, 'middle', 'center'],
     '+[c': [fill_box, 'middle', 'left'],
     '+]c': [fill_box, 'middle', 'right'],
@@ -210,10 +203,22 @@ CMDS = {
     '+}[c': [fill_box, 'bottom', 'left'],
     '+}]c': [fill_box, 'bottom', 'right'],
 
-    '+>': [draw_line_auto, '-->'],
-    '+<': [draw_line_auto, '<->'],
-    '+:': [draw_line_auto, '---'],
-    '++': [draw_line_auto, '--+'],
+    # Line drawing
+    '+>': [draw_line_vh, '-->'],
+    '+<': [draw_line_vh, '-->'],
+    '+V': [draw_line_hv, '-->'],
+    '+v': [draw_line_hv, '-->'],
+    '+^': [draw_line_hv, '-->'],
+
+    '++>': [draw_line_vh, '<->'],
+    '++<': [draw_line_vh, '<->'],
+    '++V': [draw_line_hv, '<->'],
+    '++v': [draw_line_hv, '<->'],
+    '++^': [draw_line_hv, '<->'],
+
+    '+-': [draw_line_vh, '---'],
+    '+_': [draw_line_vh, '---'],
+    '+|': [draw_line_hv, '---'],
 }
 
 def run_command(cmd, lines, y1, x1, y2, x2, *args):

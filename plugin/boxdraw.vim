@@ -39,19 +39,8 @@ function boxdraw#DrawWithLabel(cmd, args)
 	call boxdraw#Draw(a:cmd, [label] + a:args)
 endfunction
 
-function boxdraw#DrawConnection()
-	let p2 = getpos("'>")
-	call boxdraw#Draw("++", [])
-	call setpos("'<", p2)
-	execute "normal! gv"
-endfunction
-
 function boxdraw#debug()
-	let m = getpos("'m")
-	execute "normal! gvmm"
-	let p = getpos("'m")
-	call setpos("'m", m)
-	echo p
+	echo "debug"
 endfunction
 
 " -------- Keyboard mappings --------
@@ -81,6 +70,17 @@ vnoremap +D :<C-u>echo boxdraw#debug()<CR>
 " Line drawing
 vnoremap +> :<C-u>call boxdraw#Draw("+>", [])<CR>
 vnoremap +< :<C-u>call boxdraw#Draw("+<", [])<CR>
-vnoremap +: :<C-u>call boxdraw#Draw("+:", [])<CR>
-vnoremap ++ :<C-u>call boxdraw#DrawConnection()<CR>
+vnoremap +v :<C-u>call boxdraw#Draw("+v", [])<CR>
+vnoremap +V :<C-u>call boxdraw#Draw("+v", [])<CR>
+vnoremap +^ :<C-u>call boxdraw#Draw("+^", [])<CR>
+
+vnoremap ++> :<C-u>call boxdraw#Draw("++>", [])<CR>
+vnoremap ++< :<C-u>call boxdraw#Draw("++<", [])<CR>
+vnoremap ++v :<C-u>call boxdraw#Draw("++v", [])<CR>
+vnoremap ++V :<C-u>call boxdraw#Draw("++v", [])<CR>
+vnoremap ++^ :<C-u>call boxdraw#Draw("++^", [])<CR>
+
+vnoremap +- :<C-u>call boxdraw#Draw("+-", [])<CR>
+vnoremap +_ :<C-u>call boxdraw#Draw("+_", [])<CR>
+vnoremap +\| :<C-u>call boxdraw#Draw("+\|", [])<CR>
 

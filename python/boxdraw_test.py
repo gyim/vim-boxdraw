@@ -295,25 +295,8 @@ def test_draw_ling_vh():
         '        ', '        ',
     ], 'o->')
 
-def test_draw_line_auto():
-    assert_cmd(draw_line_auto, ' ', ' ', [
-        '       |', '       |',
-        '      2|', ' +---->|',
-        '       |', ' |     |',
-        ' 1      ', ' o      ',
-        '        ', '        ',
-    ], 'o->')
-
-    assert_cmd(draw_line_auto, ' ', ' ', [
-        '     ---', '     ---',
-        '      2 ', '      ^ ',
-        '        ', '      | ',
-        ' 1      ', ' o----+ ',
-        '        ', '        ',
-    ], 'o->')
-
 def test_line_start_plus():
-    assert_cmd(draw_line_auto, '-', ' ', [
+    assert_cmd(draw_line_vh, '-', ' ', [
         '       |', '       |',
         '      2|', ' +---->|',
         '       |', ' |     |',
@@ -321,7 +304,7 @@ def test_line_start_plus():
         '        ', '        ',
     ], '-->')
 
-    assert_cmd(draw_line_auto, '+', ' ', [
+    assert_cmd(draw_line_vh, '+', ' ', [
         '       |', '       |',
         '      2|', ' +---->|',
         '       |', ' |     |',
@@ -329,7 +312,7 @@ def test_line_start_plus():
         ' |      ', ' |      ',
     ], '-->')
 
-    assert_cmd(draw_line_auto, '|', ' ', [
+    assert_cmd(draw_line_hv, '|', ' ', [
         '     ---', '     ---',
         '      2 ', '      ^ ',
         ' |      ', ' |    | ',
