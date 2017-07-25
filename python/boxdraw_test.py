@@ -321,3 +321,27 @@ def test_line_plus_connections():
         '        ', '        ',
     ], '---')
 
+# -------- Selection --------
+
+def test_select_outer_box():
+    sel = select_outer_box([
+        '              ',
+        '   +-------+  ',
+        '   | #     |  ',
+        '   +-------+  ',
+        '              ',
+        '              ',
+    ], 2, 5, 2, 5)
+    assert sel == ["1,3,3,11"]
+
+def test_select_inner_box():
+    sel = select_inner_box([
+        '              ',
+        '   +-------+  ',
+        '   | #     |  ',
+        '   +-------+  ',
+        '              ',
+        '              ',
+    ], 2, 5, 2, 5)
+    assert sel == ["2,4,2,10"]
+

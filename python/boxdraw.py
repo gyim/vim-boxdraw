@@ -183,6 +183,40 @@ def draw_line_vh(lines, y1, x1, y2, x2, arrow):
         lines = overwrite_block(lines, y2, x, [line(a, w)])
     return lines
 
+# -------- Selection --------
+
+def find_box(lines, y1, x1, y2, x2):
+    lines = list(lines)
+
+    # Select left |
+    sx = min(x1,x2)
+    while char_at(lines, y1, sx, '\n') not in '|+\n':
+        sx -= 1
+
+    # Select right |
+    ex = max(x1,x2)
+    while char_at(lines, y2, ex, '\n') not in '|+\n':
+        ex += 1
+
+    # Select top -
+    sy = min(y1,y2)
+    while char_at(lines, sy, sx, '\n') not in '-+\n':
+        sy -= 1
+
+    # Select bottom -
+    ey = max(y1,y2)
+    while char_at(lines, ey, ex, '\n') not in '-+\n':
+        ey += 1
+
+    return sy, sx, ey, ex
+
+def select_outer_box(lines, y1, x1, y2, x2):
+    return ["%d,%d,%d,%d" % find_box(lines, y1, x1, y2, x2)]
+
+def select_inner_box(lines, y1, x1, y2, x2):
+    sy, sx, ey, ex = find_box(lines, y1, x1, y2, x2)
+    return ["%d,%d,%d,%d" % (min(sy+1,ey), min(sx+1,ex), max(ey-1,sy), max(ex-1,sx))]
+
 # -------- Vim commands --------
 
 CMDS = {
@@ -225,6 +259,10 @@ CMDS = {
     '+-': [draw_line_vh, '---'],
     '+_': [draw_line_vh, '---'],
     '+|': [draw_line_hv, '---'],
+
+    # Selection
+    'ao': [select_outer_box],
+    'io': [select_inner_box],
 }
 
 def run_command(cmd, lines, y1, x1, y2, x2, *args):

@@ -39,6 +39,25 @@ function boxdraw#DrawWithLabel(cmd, args)
 	call boxdraw#Draw(a:cmd, [label] + a:args)
 endfunction
 
+function boxdraw#Select(cmd)
+	let p2 = boxdraw#GetEndPos()
+	let p1 = boxdraw#GetStartPos(p2)
+	let y1 = p1[1] - 1
+	let y2 = p2[1] - 1
+	let x1 = p1[2] + p1[3] - 1
+	let x2 = p2[2] + p2[3] - 1
+
+	let contents = join(getline(1,'$'), "\n")
+	let c = [s:drawscript, shellescape(a:cmd), y1, x1, y2, x2]
+	let result = system(join(c, " "), contents)
+
+	let coords = split(result, ",")
+	
+	call setpos("'<", [0, coords[0]+1, coords[1]+1, 0])
+	call setpos("'>", [0, coords[2]+1, coords[3]+1, 0])
+	normal! gv
+endfunction
+
 function boxdraw#debug()
 	echo "debug"
 endfunction
@@ -83,4 +102,8 @@ vnoremap ++^ :<C-u>call boxdraw#Draw("++^", [])<CR>
 vnoremap +- :<C-u>call boxdraw#Draw("+-", [])<CR>
 vnoremap +_ :<C-u>call boxdraw#Draw("+_", [])<CR>
 vnoremap +\| :<C-u>call boxdraw#Draw("+\|", [])<CR>
+
+" Selection
+vnoremap ao :<C-u>call boxdraw#Select("ao")<CR>
+vnoremap io :<C-u>call boxdraw#Select("io")<CR>
 
