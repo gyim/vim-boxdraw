@@ -36,7 +36,7 @@ to memorize the mappings:
 See the examples below for full reference. 1 and 2 indicates the start/end
 position of the selection.
 
-                                                *boxdraw-+-*
+                                           *boxdraw-+-* *boxdraw-+_*
 +- or +_                Draw a line that ends with a horizontal line:
 
                         1.......    |.......     2.......    -------+
@@ -53,7 +53,7 @@ position of the selection.
                         1......2 => --------     2......1 => --------
                         ........    ........     ........    ........
 
-                                                *boxdraw-+>*
+                                           *boxdraw-+>* *boxdraw-+<*
 +> or +<                Draw a line that ends with a horizontal arrow:
 
                         1.......    |.......     2.......    <------+
@@ -68,7 +68,7 @@ position of the selection.
                         1......2 => ------->     2......1 => <-------
                         ........    ........     ........    ........
 
-                                                *boxdraw-++>*
+                                           *boxdraw-++>* *boxdraw-++<*
 ++> or ++<              Draw a line that ends with a horizontal arrow,
                         and has an arrow on both sides of the line:
 
@@ -102,7 +102,7 @@ position of the selection.
                         2.......    |.......     1.......    |.......
 
 
-                                                *boxdraw-+^*
+                                    *boxdraw-+^* *boxdraw-+v* *boxdraw-+V*
 +^, +v or +V            Draw a line that ends with a vertical arrow.
 
                         1.......    -------+     2.......    ^.......
@@ -119,8 +119,9 @@ position of the selection.
                         ........ => |.......     ........ => |.......
                         2.......    v.......     1.......    |.......
 
-                                                *boxdraw-++^*
-+^, +v or +V            Draw a line that ends with a vertical arrow.
+                                  *boxdraw-++^* *boxdraw-++v* *boxdraw-++V*
+++^, ++v or ++V         Draw a line that ends with a vertical arrow,
+                        and has an arrow on both sides of the line:
 
                         1.......    <------+     2.......    ^.......
                         ........ => .......|     ........ => |.......
@@ -146,3 +147,4 @@ then press one of the following mappings to select an object:
 
                                                 *boxdraw-+ao*
 +ao                     Select current rectangle, with borders.
+
