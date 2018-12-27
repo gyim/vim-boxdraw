@@ -20,7 +20,7 @@ All commands are mapped to the `+` prefix. See the
 | [NeoBundle][1] | Add `NeoBundle 'gyim/vim-boxdraw'` to `.vimrc`                                |
 | [Pathogen][2]  | Run `git clone https://github.com/gyim/vim-boxdraw ~/.vim/bundle/vim-boxdraw` |
 | [Plug][3]      | Add `Plug 'gyim/vim-boxdraw' ` to `.vimrc`                                    |
-| [Vundle][4]    | Add `Plugin 'gyim-vim-boxdraw'` to `.vimrc`                                   |
+| [Vundle][4]    | Add `Plugin 'gyim/vim-boxdraw'` to `.vimrc`                                   |
 
 [1]: https://github.com/Shougo/neobundle.vim
 [2]: https://github.com/tpope/vim-pathogen
