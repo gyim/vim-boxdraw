@@ -31,7 +31,7 @@ All commands are mapped to the `+` prefix. See the
 ### Developer Setup
 vim-boxdraw uses a Python script to do most of the work. To contribute to this plugin, you'll need
 
-  - Python 2.7.x
+  - Python 2.7.x and 3.5.x (we want to support system Python on most platforms)
   - `pip install -U pytest`
 
 #### Running the unit tests
