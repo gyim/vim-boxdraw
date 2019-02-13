@@ -27,3 +27,16 @@ All commands are mapped to the `+` prefix. See the
 [3]: https://github.com/junegunn/vim-plug
 [4]: https://github.com/gmarik/vundle
 
+## Contributions
+### Developer Setup
+vim-boxdraw uses a Python script to do most of the work. To contribute to this plugin, you'll need
+
+  - Python 2.7.x
+  - `pip install -U pytest`
+
+#### Running the unit tests
+
+From the `python` directory, 
+
+    pytest
+
