@@ -1,6 +1,6 @@
 let s:drawscript = expand('<sfile>:p:h:h') . "/python/boxdraw.py"
 
-function boxdraw#GetEndPos()
+function! boxdraw#GetEndPos()
 	" Vim reports '< and '> in the wrong order if the end of the selection
 	" is in an earlier line than the start of the selection. This is why
 	" we need this hack.
@@ -11,7 +11,7 @@ function boxdraw#GetEndPos()
 	return p
 endfunction
 
-function boxdraw#GetStartPos(startPos)
+function! boxdraw#GetStartPos(startPos)
 	" Returns the 'other corner' of the visual selection.
 	let p1 = getpos("'<")
 	let p2 = getpos("'>")
@@ -22,7 +22,7 @@ function boxdraw#GetStartPos(startPos)
 	endif
 endfunction
 
-function boxdraw#Draw(cmd, args)
+function! boxdraw#Draw(cmd, args)
 	let p2 = boxdraw#GetEndPos()
 	let p1 = boxdraw#GetStartPos(p2)
 	let y1 = p1[1] - 1
@@ -34,12 +34,12 @@ function boxdraw#Draw(cmd, args)
 	call setpos(".", p2)
 endfunction
 
-function boxdraw#DrawWithLabel(cmd, args)
+function! boxdraw#DrawWithLabel(cmd, args)
 	let label = shellescape(input("Label: "))
 	call boxdraw#Draw(a:cmd, [label] + a:args)
 endfunction
 
-function boxdraw#Select(cmd)
+function! boxdraw#Select(cmd)
 	let p2 = boxdraw#GetEndPos()
 	let p1 = boxdraw#GetStartPos(p2)
 	let y1 = p1[1] - 1
@@ -58,7 +58,7 @@ function boxdraw#Select(cmd)
 	normal! gv
 endfunction
 
-function boxdraw#debug()
+function! boxdraw#debug()
 	echo "debug"
 endfunction
 
