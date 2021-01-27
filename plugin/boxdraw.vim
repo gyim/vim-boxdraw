@@ -29,7 +29,7 @@ function! boxdraw#Draw(cmd, args)
 	let y2 = p2[1] - 1
 	let x1 = p1[2] + p1[3] - 1
 	let x2 = p2[2] + p2[3] - 1
-	let c = ['python', s:drawscript, shellescape(a:cmd), y1, x1, y2, x2] + a:args
+	let c = ['python3', s:drawscript, shellescape(a:cmd), y1, x1, y2, x2] + a:args
 	execute "%!" . join(c, " ")
 	call setpos(".", p2)
 endfunction
@@ -48,7 +48,7 @@ function! boxdraw#Select(cmd)
 	let x2 = p2[2] + p2[3] - 1
 
 	let contents = join(getline(1,'$'), "\n")
-	let c = ['python', s:drawscript, shellescape(a:cmd), y1, x1, y2, x2]
+	let c = ['python3', s:drawscript, shellescape(a:cmd), y1, x1, y2, x2]
 	let result = system(join(c, " "), contents)
 
 	let coords = split(result, ",")
